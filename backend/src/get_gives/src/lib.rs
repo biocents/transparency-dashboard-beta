@@ -99,8 +99,6 @@ async fn get_gives() -> String {
 
     // /gives/?start_date={}&end_date={}
 
-    // 2.2 prepare headers for the system http_request call
-    //Note that `HttpHeader` is declared in line 4
     let request_headers = vec![
         HttpHeader {
             name: "Host".to_string(),
@@ -145,7 +143,7 @@ async fn get_gives() -> String {
         }
         Err((r, m)) => {
             let message =
-                format!("The http_request resulted into error. RejectionCode: {r:?}, Error: {m}");
+                format!("The http_request resulted in an error. RejectionCode: {r:?}, Error: {m}");
 
             //Return the error as a string and end the method
             message
@@ -156,8 +154,15 @@ async fn get_gives() -> String {
 /*
 TODO
 
-STRUCT DEFINITION FOR get gives response
-use serde to model the data and parse into struct
-use stable memory to write to a "log" datatype entry
+[DONE] STRUCT DEFINITION FOR get gives response
+[DONE] use serde to model the data and parse into struct
+
+Use better stable memory structure - use stable memory to write to a "log" datatype entry
+Put types in different file
+Idempotent entries
+Handle more error cases everywhere
+
+
+
 
 */
