@@ -5,7 +5,6 @@ import Head from "next/head"
 import styles from "../ui/styles/Home.module.css"
 
 import { GreetingSection } from "../ui/components/GreetingSection"
-import { ImageSection } from "../ui/components/ImageSection"
 
 function HomePage() {
   return (
@@ -21,7 +20,6 @@ function HomePage() {
         <img src="/logo.png" alt="DFINITY logo" className={styles.logo} />
 
         <GreetingSection />
-        <ImageSection />
       </main>
     </div>
   )

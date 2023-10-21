@@ -10,6 +10,7 @@
 # dfx temporary files
 .dfx/
 canister_ids.json
+target/**
 
 # frontend code
 node_modules/
@@ -18,3 +19,5 @@ out/
 # Next.js
 .next/
 
+# rust
+target/

@@ -18,10 +18,20 @@ export const GreetingSection = () => {
     setLoading("Loading...")
 
     const helloActor = makeHelloActor()
-    const greeting = await helloActor.greet(name)
+    const greeting = await helloActor.get_gives()
 
     setLoading("")
     setGreetingMessage(greeting)
+  }
+
+  async function makeAPIcall(){
+    try {
+      const res = await fetch(`https://flockby.j8t.io/api/projects/`);
+      const data = await res.json();
+      console.log(data);
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   return (
@@ -36,12 +46,21 @@ export const GreetingSection = () => {
           value={name}
           onChange={onChangeName}
         />
-        <button onClick={sayGreeting}>Send</button>
+        <button className="border-2 border-dotted border-black" onClick={sayGreeting}>Send</button>
       </section>
       <section>
         <label>Response: &nbsp;</label>
         {loading}
         {greetingMessage}
+      </section>
+      <section>
+        <div className="flex p-8 w-96 border rounded-3xl bg-orange-200 flex-col">
+          <label>Total Feathers Recieved:</label>
+          <div className="flex flex-row">
+            <label className="text-2xl font-black font-mono">38,400</label>
+            <img className="w-10 h-10" src={"/logo.png"} alt="canister-image" />
+          </div>
+        </div>
       </section>
     </div>
   )

@@ -1,21 +1,16 @@
 {
   "canisters": {
-    "hello": {
-      "main": "backend/service/Hello.mo",
-       "type": "motoko",
-       "declarations": {
-         "node_compatibility": true
-       }
-    },
-    "image": {
-      "main": "backend/service/Image.mo",
-       "type": "motoko",
+    "get_gives": {
+      "main": "backend/src/lib.rs",
+      "candid": "backend/src/get_gives/get_gives.did",
+       "type": "rust",
+       "package": "get_gives",
        "declarations": {
          "node_compatibility": true
        }
     },
     "hello_assets": {
-      "dependencies": ["hello"],
+      "dependencies": ["get_gives"],
       "frontend": {
         "entrypoint": "out/index.html"
       },

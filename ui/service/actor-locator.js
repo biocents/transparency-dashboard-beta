@@ -1,12 +1,7 @@
 import {
   createActor as createHelloActor,
   canisterId as helloCanisterId
-} from "../declarations/hello"
-
-import {
-  createActor as createImageActor,
-  canisterId as imageCanisterId
-} from "../declarations/image"
+} from "../declarations/get_gives"
 
 export const makeActor = (canisterId, createActor) => {
   return createActor(canisterId, {
@@ -19,8 +14,4 @@ export const makeActor = (canisterId, createActor) => {
 export function makeHelloActor() {
   console.log(helloCanisterId);
   return makeActor(helloCanisterId, createHelloActor)
-}
-
-export function makeImageActor() {
-  return makeActor(imageCanisterId, createImageActor)
 }
