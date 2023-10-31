@@ -1,25 +1,16 @@
-/* eslint-disable @next/next/no-img-element */
-// Next, React
-import Head from "next/head"
-
-import styles from "../ui/styles/Home.module.css"
-
-import { GreetingSection } from "../ui/components/GreetingSection"
+import { ProjectSection } from "../ui/components/ProjectSection"
 
 function HomePage() {
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>Internet Computer</title>
-      </Head>
-      <main className={styles.main}>
-        <h3 className={styles.title}>
-          Welcome to Next.js Internet Computer Starter Template!
+    <div className="text-3xl">
+        <h2>Transparency dashboard for Biocents</h2>
+      <main >
+        <h3 className="text-xl">
+          Welcome! To see transactions, please select a project.
+          Alternatively if you are a donor, you may view your transactions directly from the Flockby app
         </h3>
 
-        <img src="/logo.png" alt="DFINITY logo" className={styles.logo} />
-
-        <GreetingSection />
+        <ProjectSection />
       </main>
     </div>
   )

@@ -21,3 +21,5 @@ out/
 
 # rust
 target/
+
+.env.*

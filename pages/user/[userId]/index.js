@@ -1,8 +1,17 @@
 import Head from "next/head"
 
-import styles from "../ui/styles/Home.module.css"
+import styles from "../../../ui/styles/Home.module.css"
 
-function UserPage() {
+import {TransactionSection} from "../../../ui/components/TransactionSection"
+
+/**
+ * 
+ * Show give transactions of the user along with status
+ * 
+ */
+
+
+function UserPage(/*params*/) {
     return (
       <div className={styles.container}>
         <Head>

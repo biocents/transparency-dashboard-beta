@@ -76,6 +76,7 @@ fn insert(key: u64, value: Record) -> Option<Record> {
     MAP.with(|p| p.borrow_mut().insert(key, value))
 }
 
+//TODO This needs to be scheduled/triggered from frontend
 //Update method using the HTTPS outcalls feature
 #[ic_cdk::update]
 async fn get_gives() -> String {
@@ -133,6 +134,7 @@ async fn get_gives() -> String {
                 insert(key, record.clone());
             }
 
+            // TODO : remove this and return only success message.
             if let Some(first_record) = get(0) {
                 first_record.userId.clone()
                 //get(0).userId
@@ -162,7 +164,9 @@ Put types in different file
 Idempotent entries
 Handle more error cases everywhere
 
-
-
+EXPOSE
+One function that fetches data - triggered by frontend or periodic
+One function that returns the transactions of a particular project
+One function that returns the transactions of a particular user
 
 */

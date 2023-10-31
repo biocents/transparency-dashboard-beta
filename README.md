@@ -1,11 +1,11 @@
-# Next.js Internet Computer Starter Template
+# Transparency dashboard v1 for tracking donations through Flockby <> Biocents
 
 This project provides a simple starter template for Dfinity Internet Computer using Next.js framework as frontend.
 
 **The Most Recent Updates**
 
-- NextJS 13.3
-- DFX 0.13.1
+- NextJS 13.5
+- DFX 0.15.0
 - NodeJS 18.16
 
 **Backend**

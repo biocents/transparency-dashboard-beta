@@ -46,7 +46,7 @@ export const GreetingSection = () => {
           value={name}
           onChange={onChangeName}
         />
-        <button className="border-2 border-dotted border-black" onClick={sayGreeting}>Send</button>
+        <button className="border-2 border-dotted border-black" onClick={makeAPIcall}>Send</button>
       </section>
       <section>
         <label>Response: &nbsp;</label>
