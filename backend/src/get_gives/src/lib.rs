@@ -17,6 +17,9 @@ use std::{borrow::Cow, cell::RefCell};
 type Memory = VirtualMemory<DefaultMemoryImpl>;
 
 const MAX_VALUE_SIZE: u32 = 10000;
+type ProjectId = String;
+type UserId = String;
+type TxId = String;
 
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -27,15 +30,40 @@ struct ApiResponse {
 
 #[derive(Debug, Serialize, Deserialize, CandidType, Clone)]
 struct Record {
+    projectId: String,
     parentNonprofits: Vec<String>,
     userId: String,
     giverEmailId: String,
     giveId: String,
-    createdOn: String,
+    status: String,
     feathersAmount: u32,
     giverId: String,
-    projectId: String,
+    payoutDate: String,
+    createdOn: String
 }
+    
+fn records_by_pid(
+    balance_map: &RefCell<StableBTreeMap<(ProjectId, TxId), Record, Memory>>,
+    projectId: ProjectId,
+  ) -> Vec<Record> {
+    balance_map
+        .range((projectId.clone(), "0IcruXhZOcMQnjtkpNss".to_string())..)
+        .take_while(|((p, _), _)| p == &projectId)
+        .map(|((_, _), rec)| rec.clone())
+        .collect()
+}
+
+fn records_by_uid(
+    balance_map: &RefCell<StableBTreeMap<(UserId, TxId), Record, Memory>>,
+    userId: UserId,
+) -> Vec<Record> {
+    balance_map
+        .range((userId.clone(), "0IcruXhZOcMQnjtkpNss".to_string())..)
+        .take_while(|((p, _), _)| p == &userId)
+        .map(|((_, _), rec)| rec.clone())
+        .collect()
+}
+
 
 impl Storable for Record {
     fn to_bytes(&self) -> std::borrow::Cow<[u8]> {
@@ -63,6 +91,20 @@ thread_local! {
             MEMORY_MANAGER.with(|m| m.borrow().get(MemoryId::new(0))),
         )
     );
+
+    // For txs by projectId
+    static P_MAP: RefCell<StableBTreeMap<(String, String), Record, Memory>> = RefCell::new(
+        StableBTreeMap::init(
+            MEMORY_MANAGER.with(|m| m.borrow().get(MemoryId::new(0))),
+        )
+    );
+
+    // For txs by userId
+    static U_MAP: RefCell<StableBTreeMap<(String, String), Record, Memory>> = RefCell::new(
+        StableBTreeMap::init(
+            MEMORY_MANAGER.with(|m| m.borrow().get(MemoryId::new(0))),
+        )
+    );
 }
 
 /// Retrieves the value associated with the given key if it exists.
@@ -71,9 +113,36 @@ fn get(key: u64) -> Option<Record> {
     MAP.with(|p| p.borrow().get(&key))
 }
 
+/// Retrieves the records associated with the given user
+// Handle empty response
+#[ic_cdk::query]
+fn get_user_txs(key: String) -> Option<Vec<Record>> {
+    //U_MAP.with(|p| p.borrow().get(&key))
+
+    let records: Vec<Record> = records_by_uid(&U_MAP, key.clone());
+    Some(records)
+}
+
+/// Retrieves the records associated with the given user
+// Handle empty response
+#[ic_cdk::query]
+fn get_project_txs(key: String) -> Option<Vec<Record>> {
+    //P_MAP.with(|p| p.borrow().get(&key))
+
+    let records: Vec<Record> = records_by_pid(&P_MAP, key.clone());
+    Some(records)
+}
+
+// p_id is projectId, u_id is userId
 #[ic_cdk::update]
-fn insert(key: u64, value: Record) -> Option<Record> {
-    MAP.with(|p| p.borrow_mut().insert(key, value))
+fn insert(p_id: ProjectId, u_id: UserId, g_id: TxId, value: Record) -> (Option<Record>, Option<Record>) {
+
+    let old_record_by_project = P_MAP.with(|p| p.borrow_mut().insert((p_id, g_id.clone()), value.clone()));
+    let old_record_by_user = U_MAP.with(|p| p.borrow_mut().insert((u_id, g_id), value.clone()));
+
+    (old_record_by_project, old_record_by_user)
+
+
 }
 
 //TODO This needs to be scheduled/triggered from frontend
@@ -96,7 +165,7 @@ async fn get_gives() -> String {
     );
 */
     let host = "flockby.j8t.io";
-    let url1 = "https://flockby.j8t.io/feathers/gives/blockchain/temp";
+    let url1 = "https://flockby.j8t.io/feathers/gives/";
 
     // /gives/?start_date={}&end_date={}
 
@@ -130,17 +199,21 @@ async fn get_gives() -> String {
             let api_response: ApiResponse = serde_json::from_str(&str_body).unwrap();
 
             for (index, record) in api_response.data.iter().enumerate() {
-                let key = index as u64; // Convert the usize from enumerate() to u64
-                insert(key, record.clone());
+                //let key = index as u64; // Convert the usize from enumerate() to u64
+                insert(record.projectId.clone(), record.userId.clone(), record.giveId.clone(), record.clone());
             }
 
             // TODO : remove this and return only success message.
+            /*
             if let Some(first_record) = get(0) {
                 first_record.userId.clone()
                 //get(0).userId
             } else {
                 String::from("No records found.")
             }
+            */
+
+            String::from("Records updated")
             
         }
         Err((r, m)) => {

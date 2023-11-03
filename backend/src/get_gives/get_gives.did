@@ -1,3 +1,5 @@
 service : {
     "get_gives": () -> (text);
+    "get_project_txs": (text) -> (text) query;
+    "get_user_txs": (text) -> (text) query;
 }
